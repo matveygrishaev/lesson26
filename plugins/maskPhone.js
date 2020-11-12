@@ -1,3 +1,4 @@
+"use strict";
 
 function maskPhone(selector, masked = '+7 (___) ___-__-__') {
 	const elems = document.querySelectorAll(selector);
@@ -32,8 +33,11 @@ function maskPhone(selector, masked = '+7 (___) ___-__-__') {
 
 	for (const elem of elems) {
 		elem.addEventListener("input", mask);
-		elem.addEventListener("focus", mask);
+		elem.addEventListener("focus", mask); //!когда мы щёлкаем отрабатывает
 		elem.addEventListener("blur", mask);
 	}
 	
 }
+
+// use
+maskPhone('селектор элементов', 'маска, если маску не передать то будет работать стандартная +7 (___) ___-__-__');
