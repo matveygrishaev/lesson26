@@ -429,4 +429,74 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
     calc(100);
+
+    // Отправка формы (AJAX)
+
+    const sendForm = () => {
+
+        // Сообщения
+        const errorMessage = 'Что то пошло не так...',
+            loadMessage = 'Загрузка...',
+            succesMessage = 'Спасибо! Мы скоро с Вами свяжемся!';
+        
+        // Форма
+        const form = document.getElementById('form1'); 
+
+        // Оповещение пользователя
+        const statusMessage = document.createElement('div'); // создаем div
+        statusMessage.style.cssText = 'font-size: 2rem;'; // стиль
+
+        // Прослушиватель на форме для проверки и отправки
+        form.addEventListener('submit', (event) => {
+
+            event.preventDefault(); // отменяем перезагрзку страницы
+
+            form.appendChild(statusMessage); // помещаем сообщение для пользователя
+
+            // ОТправка данных на сервер (урок 26)
+            const request = new XMLHttpRequest();
+
+            // Отлавливаем событие
+            request.addEventListener('readystatechange', () => {
+                
+                statusMessage.textContent = loadMessage;
+
+                if (request.readyState !==4) {
+                    return;
+                }
+
+                if (request.status === 200) {
+                    statusMessage.textContent = succesMessage;
+                } else {
+                    statusMessage.textContent = errorMessage;
+                }
+
+            });
+
+            request.open('POST', '/server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+
+            // Создаем form-data для получения с нее данных и отправки на сервер
+            const formData = new FormData(form);
+
+            // Если перед отправкой на сервер нужно переформатировать в формат JSON:
+            let body = {};
+
+            // for (let value of formData.entries()) {
+            //     body[value[0]] = value[1];
+            //     console.log(body);
+
+            formData.forEach((value, key) => {
+                body[key] = value;
+            });
+
+            request.send(JSON.stringify(body)); // получили данные и отправляем, конвертируя в JSON
+
+            /*теперь после отправки формы, в браузере нажать Network, то в разделе Headers можно увидеть всю информацию и введеные пользователем данные*/
+        });
+
+    };
+
+    sendForm();
+
 });
